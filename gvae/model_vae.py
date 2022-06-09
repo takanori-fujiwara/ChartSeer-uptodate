@@ -1,3 +1,7 @@
+#
+# Modified code to support latest keras and tensorflow by Takanori Fujiwara
+#
+
 ##################################################
 ## Generic VAE model
 ## This code is based on https://github.com/mkusner/grammarVAE
@@ -7,16 +11,15 @@
 ##################################################
 
 from keras import backend as K
-from keras import objectives
+from keras import losses
 from keras import optimizers
 from keras.models import Model
-from keras.layers import Input, Dense, Lambda
+from keras.layers import Input, Dense, Lambda, TimeDistributed, GRU, LSTM, Convolution1D, BatchNormalization
 from keras.layers.core import Dense, Activation, Flatten, RepeatVector
-from keras.layers.wrappers import TimeDistributed
-from keras.layers.recurrent import GRU, LSTM
-from keras.layers.convolutional import Convolution1D
-from keras.layers.normalization import BatchNormalization
-import tensorflow as tf
+# import tensorflow as tf
+import tensorflow._api.v2.compat.v1 as tf
+
+tf.disable_v2_behavior()
 
 from vis_grammar import VisGrammar
 
@@ -162,7 +165,7 @@ class ModelVAE():
             x_decoded_mean = K.flatten(x_decoded_mean)
             x = K.flatten(x)
             x_decoded_mean = K.flatten(x_decoded_mean)
-            xent_loss = max_length * objectives.binary_crossentropy(
+            xent_loss = max_length * losses.binary_crossentropy(
                 x, x_decoded_mean)
             kl_loss = -0.5 * K.mean(
                 1 + z_log_var - K.square(z_mean) - K.exp(z_log_var), axis=-1)

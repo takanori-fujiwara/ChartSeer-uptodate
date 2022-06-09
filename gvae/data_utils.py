@@ -1,3 +1,7 @@
+#
+# Modified by Takanori Fujiwara to match with the description of Jian Zhao et al.'s paper
+#
+
 ##################################################
 ## Utility functions
 ##################################################
@@ -214,7 +218,7 @@ def test_grammar(rulesfile):
 
 
 if __name__ == '__main__':
-    os.chdir('gvae')
+    # os.chdir('gvae')
 
     ### Training Pipeline
     # follow the steps below to train and test the model by commenting and uncommenting the appropriate lines of code
@@ -233,11 +237,12 @@ if __name__ == '__main__':
                       'trainingdata/rules-cfg.txt', 'trainingdata/')
 
     ## 3. train the model: see train.py
-    # e.g., python train.py --hidden 256 --dense 256 --conv1 8 3 --conv3 8 3 --conv3 8 3 --latent 20
+    # e.g., python train.py --hidden 256 --dense 256 --conv1 4 3 --conv2 4 3 --conv3 4 3 --latent 20
+    # e.g., python train.py --hidden 256 --dense 256 --conv1 4 3 --conv2 4 3 --conv3 4 3 --latent 2
 
     ## 4. test the model performance
-    test_vaemodel('trainingdata/rules-cfg.txt',
-                  'trained/vae_H256_D256_C444_333_L20_B200.hdf5',
+    trained_model_data = 'trained/vae_H256_D256_C444_333_L20_B200.hdf5'
+    test_vaemodel('trainingdata/rules-cfg.txt', trained_model_data,
                   'trainingdata/test.h5')
 
     ### Experimental Code (Optional)
@@ -252,7 +257,8 @@ if __name__ == '__main__':
     #         line = line.strip()
     #         inputspec.append(line)
     # inputspec = inputspec[1000:1005]  # select 5 charts in the input to check the model output
-    # outputspec, z = test_visvae(inputspec, 'trainingdata/rules-cfg.txt', 'trained/vae_H256_D256_C444_333_L2_B200.hdf5')
+    # outputspec, z = test_visvae(inputspec, 'trainingdata/rules-cfg.txt',
+    #                             trained_model_data)
     # with open('results.json', 'w') as outputs:
     #     outputs.write('{"input": [' + ','.join(inputspec) + '],')
     #     outputs.write('"output": [' + ','.join(outputspec) + ']}')

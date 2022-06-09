@@ -1,3 +1,7 @@
+#
+# Modified to match with the provided file names by Takanori Fujiwara
+#
+
 ##################################################
 ## Modeling training scripts
 ## This code is based on https://github.com/mkusner/grammarVAE
@@ -71,7 +75,7 @@ def main():
     h5f.close()
 
     rules = []
-    with open('trainingdata/rules-cfg-all.txt', 'r') as inputs:
+    with open('trainingdata/rules-cfg.txt', 'r') as inputs:
         for line in inputs:
             line = line.strip()
             rules.append(line)
