@@ -5,3 +5,5 @@ nltk
 simplejson
 tensorflow
 six
+matplotlib
+sklearn

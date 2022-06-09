@@ -1,4 +1,3 @@
-root -> encoding "+" mark
 aggregate -> "count"
 aggregate -> "mean"
 aggregate -> "sum"
@@ -10,16 +9,16 @@ color -> field "+" type
 detail -> aggregate "+" field "+" type
 detail -> field "+" timeUnit "+" type
 detail -> field "+" type
+encoding -> color "+" detail "+" x "+" y
+encoding -> color "+" shape "+" x "+" y
+encoding -> color "+" size "+" x "+" y
 encoding -> color "+" x "+" y
+encoding -> detail "+" shape "+" x "+" y
+encoding -> detail "+" size "+" x "+" y
 encoding -> detail "+" x "+" y
+encoding -> shape "+" size "+" x "+" y
 encoding -> shape "+" x "+" y
 encoding -> size "+" x "+" y
-encoding -> color "+" size "+" x "+" y
-encoding -> color "+" shape "+" x "+" y
-encoding -> color "+" detail "+" x "+" y
-encoding -> detail "+" size "+" x "+" y
-encoding -> detail "+" shape "+" x "+" y
-encoding -> shape "+" size "+" x "+" y
 encoding -> x "+" y
 field -> "num"
 field -> "str"
@@ -29,6 +28,7 @@ mark -> "circle"
 mark -> "line"
 mark -> "point"
 mark -> "tick"
+root -> encoding "+" mark
 shape -> aggregate "+" field "+" type
 shape -> field "+" timeUnit "+" type
 shape -> field "+" type
