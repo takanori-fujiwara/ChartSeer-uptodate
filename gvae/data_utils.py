@@ -19,6 +19,7 @@ from vis_vae import VisVAE, get_rules, get_specs
 from vis_grammar import VisGrammar
 from train import MAX_LEN
 
+
 # extract CFG rules from the dataset
 def extract_rules(inputfile, outputfile):
     specs = []
@@ -50,6 +51,7 @@ def extract_rules(inputfile, outputfile):
         for r in allrules:
             outf.write(r + '\n')
 
+
 # generate the traning and testing datasets
 def generate_datasets(inputfile, rulesfile, outputdir):
     data = []
@@ -80,12 +82,13 @@ def generate_datasets(inputfile, rulesfile, outputdir):
     split = int(0.1 * one_hot.shape[0])
     with h5py.File(outputdir + 'test.h5', 'w') as f:
         f.create_dataset('data', data=one_hot[0:split])
-    
+
     with h5py.File(outputdir + 'train.h5', 'w') as f:
         f.create_dataset('data', data=one_hot[split:])
-    
+
     with h5py.File(outputdir + 'dev.h5', 'w') as f:
         f.create_dataset('data', data=one_hot[0:1000])
+
 
 # test the accuracy of the model
 def test_vaemodel(rulesfile, modelsave, datafile):
@@ -104,18 +107,29 @@ def test_vaemodel(rulesfile, modelsave, datafile):
     print(data.shape)
 
     output = visvae.vae.autoencoder.predict(data)
-    count = np.sum(np.equal(np.argmax(data, axis=2), np.argmax(output, axis=2)))
+    count = np.sum(np.equal(np.argmax(data, axis=2), np.argmax(output,
+                                                               axis=2)))
     print('accuracy: ', count / float(data.shape[0] * data.shape[1]))
 
     return output
 
+
 # diplay the embeding space
 def visualize_embedding(z, specs, figpath='./'):
-    clr6 = ['#b3e2cd','#fdcdac','#cbd5e8','#f4cae4','#e6f5c9','#fff2ae']
-    clr11 = ['#8dd3c7','#ffffb3','#bebada','#fb8072','#80b1d3','#fdb462','#b3de69','#fccde5','#d9d9d9','#bc80bd','#ccebc5']
+    clr6 = ['#b3e2cd', '#fdcdac', '#cbd5e8', '#f4cae4', '#e6f5c9', '#fff2ae']
+    clr11 = [
+        '#8dd3c7', '#ffffb3', '#bebada', '#fb8072', '#80b1d3', '#fdb462',
+        '#b3de69', '#fccde5', '#d9d9d9', '#bc80bd', '#ccebc5'
+    ]
 
-
-    mark2int = {'area':0, 'bar':1, 'circle':2, 'line':3, 'point':4, 'tick':5}
+    mark2int = {
+        'area': 0,
+        'bar': 1,
+        'circle': 2,
+        'line': 3,
+        'point': 4,
+        'tick': 5
+    }
     channel2int = {}
     channelmark2int = {}
 
@@ -158,9 +172,15 @@ def visualize_embedding(z, specs, figpath='./'):
     plt.savefig(figpath + 'embedding-channel.pdf', bbox_inches='tight')
 
     plt.figure()
-    plt.scatter(results[:, 0], results[:, 1], s=5, c=channelmarks, cmap='rainbow', alpha=0.7)
+    plt.scatter(results[:, 0],
+                results[:, 1],
+                s=5,
+                c=channelmarks,
+                cmap='rainbow',
+                alpha=0.7)
     cbar = plt.colorbar()
     plt.savefig(figpath + 'embedding-all.pdf', bbox_inches='tight')
+
 
 # helper function to check the trained encoder and decoder
 def test_visvae(inputspec, rulesfile, modelsave):
@@ -172,14 +192,15 @@ def test_visvae(inputspec, rulesfile, modelsave):
 
     m = re.search(r'_L(\d+)_', modelsave)
     visvae = VisVAE(modelsave, rules, MAX_LEN, int(m.group(1)))
-    
+
     # print(inputspec)
     z = visvae.encode(inputspec)
     # print(z)
     outputspec = visvae.decode(z)
     # print(outputspec)
 
-    return outputspec,z
+    return outputspec, z
+
 
 # helper function to check the CFG
 def test_grammar(rulesfile):
@@ -191,31 +212,34 @@ def test_grammar(rulesfile):
     print(grammar.GCFG.start())
     print(len(grammar.GCFG.productions()))
 
+
 if __name__ == '__main__':
     os.chdir('gvae')
 
     ### Training Pipeline
     # follow the steps below to train and test the model by commenting and uncommenting the appropriate lines of code
 
-    ## 0. preparation 
+    ## 0. preparation
     # pip install -r requirements.txt
     # mkdir trainingdata
     # mkdir trained
 
     ## 1. build the CFG rules file
-    extract_rules('../sourcedata/vegaspecs-processed.txt', 'trainingdata/rules-cfg.txt')
+    extract_rules('../sourcedata/vegaspecs-processed.txt',
+                  'trainingdata/rules-cfg.txt')
 
     ## 2. generate the traning and testing datasets
-    generate_datasets('../sourcedata/vegaspecs-processed.txt', 'trainingdata/rules-cfg.txt', 'trainingdata/')
+    generate_datasets('../sourcedata/vegaspecs-processed.txt',
+                      'trainingdata/rules-cfg.txt', 'trainingdata/')
 
     ## 3. train the model: see train.py
     # e.g., python train.py --hidden 256 --dense 256 --conv1 8 3 --conv3 8 3 --conv3 8 3 --latent 20
 
     ## 4. test the model performance
-    test_vaemodel('trainingdata/rules-cfg.txt', 'trained/vae_H256_D256_C444_333_L20_B200.hdf5', 'trainingdata/test.h5')
+    test_vaemodel('trainingdata/rules-cfg.txt',
+                  'trained/vae_H256_D256_C444_333_L20_B200.hdf5',
+                  'trainingdata/test.h5')
 
-    
-    
     ### Experimental Code (Optional)
 
     ## check if the CFG grammar works properly
